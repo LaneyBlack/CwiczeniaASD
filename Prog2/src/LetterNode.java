@@ -3,17 +3,9 @@ public class LetterNode {
     private LetterNode leftNode;
     private LetterNode rightNode;
 
-    public LetterNode() {}
-
-    public LetterNode(char value) {
-        this.value = value;
+    public LetterNode() {
     }
 
-    public LetterNode(char value, LetterNode leftNode, LetterNode rightNode) {
-        this.value = value;
-        this.leftNode = leftNode;
-        this.rightNode = rightNode;
-    }
 
     public char getValue() {
         return value;
@@ -33,6 +25,10 @@ public class LetterNode {
 
     public LetterNode getRightNode() {
         return rightNode;
+    }
+
+    public boolean hasChildren() {
+        return leftNode != null || rightNode != null;
     }
 
     public void setRightNode(LetterNode rightNode) {

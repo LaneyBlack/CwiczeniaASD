@@ -1,10 +1,10 @@
 public class LetterTree {
     private LetterNode head;
-    private int size;
+    private String longestWord;
 
     public LetterTree() {
         head = null;
-        size = 0;
+        longestWord = "";
     }
 
     public void build(char value, String steps) {
@@ -12,31 +12,35 @@ public class LetterTree {
             head = new LetterNode();
         LetterNode tmp = head;
         for (int i = 0; i < steps.length(); i++) {
-            if(steps.charAt(i)=='R'){
-                if (tmp.getRightNode()==null)
+            if (steps.charAt(i) == 'R') {
+                if (tmp.getRightNode() == null)
                     tmp.setRightNode(new LetterNode());
                 tmp = tmp.getRightNode();
-            }else{
-                if (tmp.getLeftNode()==null)
+            } else {
+                if (tmp.getLeftNode() == null)
                     tmp.setLeftNode(new LetterNode());
                 tmp = tmp.getLeftNode();
             }
         }
         tmp.setValue(value);
-        size++;
-    }
-    public void printInTree(LetterNode tmp){
-        if (tmp.getLeftNode()!=null)
-            printInTree(tmp.getLeftNode());
-        System.out.print(tmp.getValue());
-        if (tmp==head)
-            System.out.println();
-        if (tmp.getRightNode()!=null) {
-            printInTree(tmp.getRightNode());
-        }
     }
 
-    public LetterNode getHead() {
-        return head;
+    public String getLongestWord() {
+        findWordRec(head, "");
+        return longestWord;
+    }
+
+    public void findWordRec(LetterNode tmp, String word) {
+        word = tmp.getValue() + word;
+        if (tmp.getLeftNode() != null)
+            findWordRec(tmp.getLeftNode(), word);
+        if (tmp.getRightNode() != null)
+            findWordRec(tmp.getRightNode(), word);
+        if (!tmp.hasChildren()) {
+//            System.out.println(word);
+            if (longestWord.compareTo(word) < 0) {
+                longestWord = word;
+            }
+        }
     }
 }
