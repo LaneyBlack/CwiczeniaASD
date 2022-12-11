@@ -15,7 +15,7 @@ public class Main {
                 values = input.nextLine().trim().split(" ");
                 if (values.length == 2)
                     tree.build(values[0].charAt(0), values[1]);
-                else
+                else if (values.length==1 && values[0].length()>0)
                     tree.build(values[0].charAt(0), "");
             }
             System.out.println(tree.getLongestWord());
