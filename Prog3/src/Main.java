@@ -10,17 +10,17 @@ public class Main {
                 Tree tree = new Tree(Integer.parseInt(input.next().trim()));
                 int index = 0;
                 while (input.hasNext()) {
-                    tree.build(tree.getRoot(), new Node(index, Integer.parseInt(input.next().trim())));
-                    index++;
+                    System.out.println(index + ": ");
+                    tree.build(new Node(index++, Integer.parseInt(input.next().trim())));
+                    tree.printRec(tree.getRoot());
                 }
-                tree.printRec(tree.getRoot());
 //                tree.operate();
             } catch (FileNotFoundException e) {
                 System.out.println("File not found!");
                 throw new RuntimeException(e);
             }
         } else {
-            System.out.println("Argument input exception");
+            System.out.println("Wrong input exception");
         }
     }
 }

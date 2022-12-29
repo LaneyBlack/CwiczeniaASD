@@ -1,6 +1,6 @@
 public class Node {
-    private int index;
-    private int value;
+    private final int index;
+    private final int value;
     private int height;
     private Node leftNode;
     private Node rightNode;
@@ -8,7 +8,7 @@ public class Node {
     public Node(int index, int value) {
         this.index = index;
         this.value = value;
-        height = 0;
+        height = 1;
     }
 
     public Node getLeftNode() {
@@ -35,15 +35,8 @@ public class Node {
         this.height = height;
     }
 
-    public int getIndex() {
-        return index;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int value) {
-        this.value = value;
+    @Override
+    public String toString() {
+        return "Node{I" + index + "-V" + value + "-H" + height + "}";
     }
 }
