@@ -1,53 +1,53 @@
 public class Tree {
     private Node root;
-    private int opCount;
-    private int index;
+    private Node currentNode;
     private int globalHeight;
 
-    public Tree(int opCount) {
-        this.opCount = opCount;
+    public Tree() {
         globalHeight = 0;
-    }
-
-    public void printRec(Node tmp) {
-        System.out.println(tmp);
-        if (tmp.getLeftNode() != null)
-            printRec(tmp.getLeftNode());
-        if (tmp.getRightNode() != null)
-            printRec(tmp.getRightNode());
     }
 
     public void build(Node newNode) {
         add(root, newNode);
     }
 
-    public void add(Node curNode, Node newNode) {
-        if (curNode == null) //Root
+    public void add(Node currentNode, Node newNode) {
+        if (currentNode == null) //Root
             root = newNode;
         else { //Insert Node
             globalHeight = 1;
-            if (curNode.getRightNode() != null) {
-                add(curNode.getRightNode(), newNode);
+            if (newNode.getIndex() >= currentNode.getIndex())
+                if (currentNode.getRightNode() != null) {
+                    add(currentNode.getRightNode(), newNode);
+                } else {
+                    currentNode.setRightNode(newNode);
+                }
+            else if (currentNode.getLeftNode() != null) {
+                add(currentNode.getLeftNode(), newNode);
             } else {
-                curNode.setRightNode(newNode);
+                currentNode.setLeftNode(newNode);
             }
-            curNode.setHeight(++globalHeight);
+            currentNode.setHeight(++globalHeight);
+            currentNode.setSize(currentNode.getSize() + 1);
             //Rotations
-            if (getBalanceFactor(curNode) < -1) {
-                if (getBalanceFactor(curNode.getLeftNode()) > 0) { //Double Right Or R-L rotation
-                    //ToDo
-                    curNode = rotateRight(curNode);
-                    curNode = rotateLeft(curNode);
-                } else //One rot
-                    curNode = rotateLeft(curNode);
-            }
+            rotationsCheck(currentNode);
         }
     }
 
-    public void operate() {
-        while (opCount > 0) {
-
-            opCount--;
+    public void rotationsCheck(Node node){
+        int tmp = getBalanceFactor(node);
+        if (tmp < -1) {
+            if (getBalanceFactor(node.getLeftNode()) > 0) { //Double Right (R-L)
+                node = rotateRight(node.getRightNode());
+                rotateLeft(node);
+            } else //One rotation L
+                rotateLeft(node);
+        } else if (tmp > 1) {
+            if (getBalanceFactor(node.getRightNode()) < 0) { //Double Left (L-R)
+                node = rotateLeft(node.getLeftNode());
+                rotateRight(node);
+            } else //One rotation R
+                rotateRight(node);
         }
     }
 
@@ -57,16 +57,11 @@ public class Tree {
         Node leftRightNode = rightNode.getLeftNode();
         rightNode.setLeftNode(node);
         node.setRightNode(leftRightNode);
+
         //Set heights
-        int tmp;
-        //For A
-        tmp = Math.max(node.getLeftNode() == null ? 0 : node.getLeftNode().getHeight(),
-                node.getRightNode() == null ? 0 : node.getRightNode().getHeight());
-        node.setHeight(tmp + 1);
-        //For B
-        tmp = Math.max(rightNode.getLeftNode() == null ? 0 : rightNode.getLeftNode().getHeight(),
-                rightNode.getRightNode() == null ? 0 : rightNode.getRightNode().getHeight());
-        rightNode.setHeight(tmp + 1);
+        node.updateSizeAndHeight();
+        rightNode.updateSizeAndHeight();
+
         if (node == root)
             root = rightNode;
         return rightNode;
@@ -79,19 +74,43 @@ public class Tree {
         leftNode.setRightNode(node);
         node.setLeftNode(rightLeftNode);
         //Set heights
-        int tmp;
-        //For A
-        tmp = Math.max(node.getLeftNode() == null ? 0 : node.getLeftNode().getHeight(),
-                node.getRightNode() == null ? 0 : node.getRightNode().getHeight());
-        node.setHeight(tmp + 1);
-        //For B
-        tmp = Math.max(leftNode.getLeftNode() == null ? 0 : leftNode.getLeftNode().getHeight(),
-                leftNode.getRightNode() == null ? 0 : leftNode.getRightNode().getHeight());
-        leftNode.setHeight(tmp + 1);
+        node.updateSizeAndHeight();
+        leftNode.updateSizeAndHeight();
         if (node == root)
             root = leftNode;
         return leftNode;
     }
+
+    public void operateRec(Node currentNode, int index) {
+        //ToDo return int to skip...
+        int lTSize = currentNode.getLeftNode().getSize();
+        if (lTSize > index) {
+            operateRec(currentNode.getLeftNode(), index);
+        } else if (lTSize < index) {
+            operateRec(currentNode.getRightNode(), index - currentNode.getLeftNode().getSize());
+        } else {
+            Node tmp = currentNode.getRightNode();
+            if (currentNode.getValue() % 2 == 0) { //DELETE
+            } else { //ADD
+                Node newNode = new Node(currentNode.getIndex(), currentNode.getValue() - 1);
+                newNode.setRightNode(tmp);
+                newNode.updateSizeAndHeight();
+                currentNode.setRightNode(newNode);
+                currentNode.setSize(currentNode.getSize() + 1);
+                currentNode.setHeight(currentNode.getHeight() + 1);
+            }
+        }
+        rotationsCheck(currentNode);
+    }
+
+    public void deleteNext(Node currentNode, int index) {
+
+    }
+
+    public Node operate(int index) {
+        return operateRec(root, index);
+    }
+
 
     private int getBalanceFactor(Node node) {
         if (node == null)
@@ -106,5 +125,20 @@ public class Tree {
 
     public Node getRoot() {
         return root;
+    }
+
+    public void print(Node start) {
+        printRec(start, 0);
+    }
+
+    public void printRec(Node tmp, int space) {
+        if (tmp == null)
+            return;
+        space += 2;
+        printRec(tmp.getRightNode(), space);
+        for (int i = 0; i < space - 2; i++)
+            System.out.print("\t");
+        System.out.print(tmp + "\n");
+        printRec(tmp.getLeftNode(), space);
     }
 }

@@ -7,14 +7,20 @@ public class Main {
         if (args.length == 1) {
             try {
                 Scanner input = new Scanner(new File(args[0]));
-                Tree tree = new Tree(Integer.parseInt(input.next().trim()));
+                int operationCount = Integer.parseInt(input.next().trim());
+                Tree tree = new Tree();
                 int index = 0;
                 while (input.hasNext()) {
                     System.out.println(index + ": ");
                     tree.build(new Node(index++, Integer.parseInt(input.next().trim())));
-                    tree.printRec(tree.getRoot());
+                    tree.print(tree.getRoot());
                 }
-//                tree.operate();
+                index = 0;
+                while (operationCount > 0) {
+                    index %= tree.getRoot().getSize();
+                    index += tree.operate(index).getValue();
+                    operationCount--;
+                }
             } catch (FileNotFoundException e) {
                 System.out.println("File not found!");
                 throw new RuntimeException(e);
