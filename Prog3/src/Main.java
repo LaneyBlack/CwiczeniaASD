@@ -17,9 +17,11 @@ public class Main {
                 }
                 index = 0;
                 while (operationCount > 0) {
+                    System.out.println("Operations: " + operationCount);
                     index %= tree.getRoot().getSize();
-                    index += tree.operate(index).getValue();
+                    index += tree.operate(index);
                     operationCount--;
+                    tree.print(tree.getRoot());
                 }
             } catch (FileNotFoundException e) {
                 System.out.println("File not found!");

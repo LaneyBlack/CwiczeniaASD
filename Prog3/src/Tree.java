@@ -1,6 +1,6 @@
 public class Tree {
     private Node root;
-    private Node currentNode;
+    private int countToSkip;
     private int globalHeight;
 
     public Tree() {
@@ -34,7 +34,7 @@ public class Tree {
         }
     }
 
-    public void rotationsCheck(Node node){
+    public void rotationsCheck(Node node) {
         int tmp = getBalanceFactor(node);
         if (tmp < -1) {
             if (getBalanceFactor(node.getLeftNode()) > 0) { //Double Right (R-L)
@@ -83,14 +83,22 @@ public class Tree {
 
     public void operateRec(Node currentNode, int index) {
         //ToDo return int to skip...
-        int lTSize = currentNode.getLeftNode().getSize();
-        if (lTSize > index) {
+        int lTSize = currentNode.getLeftNode() == null ? 0 : currentNode.getLeftNode().getSize();
+        if (lTSize > index)
             operateRec(currentNode.getLeftNode(), index);
-        } else if (lTSize < index) {
-            operateRec(currentNode.getRightNode(), index - currentNode.getLeftNode().getSize());
-        } else {
+        else if (lTSize < index)
+            operateRec(currentNode.getRightNode(), index - lTSize - 1);
+        else {
             Node tmp = currentNode.getRightNode();
             if (currentNode.getValue() % 2 == 0) { //DELETE
+                if (tmp != null) { //get minimum node
+                    if (tmp.getLeftNode()!=null)
+                        currentNode.setRightNode(tmp.getLeftNode());
+                    else
+                        currentNode.setRightNode(tmp.getRightNode());
+                } else { 
+
+                }
             } else { //ADD
                 Node newNode = new Node(currentNode.getIndex(), currentNode.getValue() - 1);
                 newNode.setRightNode(tmp);
@@ -99,16 +107,14 @@ public class Tree {
                 currentNode.setSize(currentNode.getSize() + 1);
                 currentNode.setHeight(currentNode.getHeight() + 1);
             }
+            countToSkip = currentNode.getValue();
         }
         rotationsCheck(currentNode);
     }
 
-    public void deleteNext(Node currentNode, int index) {
-
-    }
-
-    public Node operate(int index) {
-        return operateRec(root, index);
+    public int operate(int index) {
+        operateRec(root, index);
+        return countToSkip;
     }
 
 
