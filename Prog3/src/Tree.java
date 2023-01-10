@@ -51,6 +51,23 @@ public class Tree {
         }
     }
 
+    //ToDo Rotations if not root must be written...
+    public Node rotateRight(Node node) {
+        System.out.println("Rotation right");
+        Node leftNode = node.getLeftNode();
+        Node rightLeftNode = leftNode.getRightNode();
+        leftNode.setRightNode(node);
+        node.setLeftNode(rightLeftNode);
+
+        //Set heights
+        node.updateSizeAndHeight();
+        leftNode.updateSizeAndHeight();
+
+        if (node == root)
+            root = leftNode;
+        return leftNode;
+    }
+
     public Node rotateLeft(Node node) {
         System.out.println("Rotation left");
         Node rightNode = node.getRightNode();
@@ -67,56 +84,55 @@ public class Tree {
         return rightNode;
     }
 
-    public Node rotateRight(Node node) {
-        System.out.println("Rotation right");
-        Node leftNode = node.getLeftNode();
-        Node rightLeftNode = leftNode.getRightNode();
-        leftNode.setRightNode(node);
-        node.setLeftNode(rightLeftNode);
-        //Set heights
-        node.updateSizeAndHeight();
-        leftNode.updateSizeAndHeight();
-        if (node == root)
-            root = leftNode;
-        return leftNode;
-    }
-
-    public void operateRec(Node currentNode, int index) {
-        //ToDo return int to skip...
+    public void operateRec(Node currentNode, int relIndex, int index) {
         int lTSize = currentNode.getLeftNode() == null ? 0 : currentNode.getLeftNode().getSize();
-        if (lTSize > index)
-            operateRec(currentNode.getLeftNode(), index);
-        else if (lTSize < index)
-            operateRec(currentNode.getRightNode(), index - lTSize - 1);
+        if (lTSize > relIndex)
+            operateRec(currentNode.getLeftNode(), relIndex, index);
+        else if (lTSize < relIndex)
+            operateRec(currentNode.getRightNode(), relIndex - lTSize - 1, index);
         else {
             Node tmp = currentNode.getRightNode();
             if (currentNode.getValue() % 2 == 0) { //DELETE
-                if (tmp != null) { //get minimum node
-                    if (tmp.getLeftNode()!=null)
-                        currentNode.setRightNode(tmp.getLeftNode());
-                    else
-                        currentNode.setRightNode(tmp.getRightNode());
-                } else { 
-
-                }
+                //ToDo substitution is always a node, that you found first
+                System.out.println("Delete");
+                deleteRec(root, null, index + 1);
             } else { //ADD
+                System.out.println("Add");
                 Node newNode = new Node(currentNode.getIndex(), currentNode.getValue() - 1);
                 newNode.setRightNode(tmp);
                 newNode.updateSizeAndHeight();
                 currentNode.setRightNode(newNode);
-                currentNode.setSize(currentNode.getSize() + 1);
-                currentNode.setHeight(currentNode.getHeight() + 1);
+                countToSkip = currentNode.getValue();
             }
-            countToSkip = currentNode.getValue();
         }
+        currentNode.updateSizeAndHeight();
         rotationsCheck(currentNode);
     }
 
     public int operate(int index) {
-        operateRec(root, index);
+        operateRec(root, index, index);
         return countToSkip;
     }
 
+    public void deleteRec(Node currentNode, Node prevNode, int index) {
+        int lTSize = currentNode.getLeftNode() == null ? 0 : currentNode.getLeftNode().getSize();
+        if (lTSize > index)
+            deleteRec(currentNode.getLeftNode(), currentNode, index);
+        else if (lTSize < index)
+            deleteRec(currentNode.getRightNode(), currentNode, index - lTSize - 1);
+        else {
+            Node sub = getSubstitution(currentNode);
+            sub.setRightNode(currentNode.getRightNode());
+            sub.setLeftNode(currentNode.getLeftNode());
+            if (currentNode == root)
+                root = sub;
+            else
+                prevNode.setRightNode(sub);
+            countToSkip = currentNode.getValue();
+        }
+        currentNode.updateSizeAndHeight();
+        rotationsCheck(currentNode);
+    }
 
     private int getBalanceFactor(Node node) {
         if (node == null)
@@ -127,6 +143,22 @@ public class Tree {
         if (node.getRightNode() != null)
             result -= node.getRightNode().getHeight();
         return result;
+    }
+
+    public Node getSubstitution(Node node) {
+        if (node == null || !node.hasChildren())
+            return node;
+        if (node.getLeftNode() != null)
+            return cutMax(node.getLeftNode(), null);
+        else
+            return node.getRightNode();
+    }
+
+    public Node cutMax(Node node, Node prev) {
+        if (node.getRightNode() != null)
+            return cutMax(node.getRightNode(), node);
+        prev.setRightNode(node.getLeftNode());
+        return node;
     }
 
     public Node getRoot() {

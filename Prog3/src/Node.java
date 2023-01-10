@@ -30,6 +30,10 @@ public class Node {
         this.rightNode = rightNode;
     }
 
+    public boolean hasChildren() {
+        return rightNode != null || leftNode != null;
+    }
+
     public int getHeight() {
         return height;
     }
@@ -52,10 +56,10 @@ public class Node {
     }
 
     public void updateSize() {
-        size = (leftNode == null ? 0 : leftNode.getSize()) + (rightNode == null ? 0 : leftNode.getSize()) + 1;
+        size = (leftNode == null ? 0 : leftNode.getSize()) + (rightNode == null ? 0 : rightNode.getSize()) + 1;
     }
 
-    public void updateSizeAndHeight(){
+    public void updateSizeAndHeight() {
         this.updateSize();
         this.updateHeight();
     }
@@ -67,7 +71,6 @@ public class Node {
     public int getValue() {
         return value;
     }
-
 
     @Override
     public String toString() {
