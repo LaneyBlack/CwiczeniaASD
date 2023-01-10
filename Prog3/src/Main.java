@@ -12,8 +12,9 @@ public class Main {
                 int index = 0;
                 while (input.hasNext()) {
                     System.out.println(index + ": ");
-                    tree.build(new Node(index++, Integer.parseInt(input.next().trim())));
+                    tree.build(new Node(Integer.parseInt(input.next().trim())));
                     tree.print(tree.getRoot());
+                    index++;
                 }
                 index = 0;
                 while (operationCount > 0) {

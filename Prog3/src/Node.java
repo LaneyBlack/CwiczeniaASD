@@ -1,5 +1,4 @@
 public class Node {
-    private final int index;
     private final int value;
     private int height;
 
@@ -7,8 +6,7 @@ public class Node {
     private Node leftNode;
     private Node rightNode;
 
-    public Node(int index, int value) {
-        this.index = index;
+    public Node(int value) {
         this.value = value;
         height = 1;
         size = 1;
@@ -64,16 +62,12 @@ public class Node {
         this.updateHeight();
     }
 
-    public int getIndex() {
-        return index;
-    }
-
     public int getValue() {
         return value;
     }
 
     @Override
     public String toString() {
-        return "Node{I" + index + "-V" + value + "-H" + height + "-S" + size + "}";
+        return "Node{V" + value + "-H" + height + "-S" + size + "}";
     }
 }
