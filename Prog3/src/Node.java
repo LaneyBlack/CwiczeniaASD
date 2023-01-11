@@ -1,7 +1,6 @@
 public class Node {
-    private final int value;
+    private int value;
     private int height;
-
     private int size;
     private Node leftNode;
     private Node rightNode;
@@ -64,6 +63,10 @@ public class Node {
 
     public int getValue() {
         return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
     }
 
     @Override

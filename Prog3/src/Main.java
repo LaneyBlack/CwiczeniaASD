@@ -9,7 +9,7 @@ public class Main {
                 Scanner input = new Scanner(new File(args[0]));
                 int operationCount = Integer.parseInt(input.next().trim());
                 Tree tree = new Tree();
-                int index = 0;
+                int index = 0, operation = 1;
                 while (input.hasNext()) {
                     System.out.println(index + ": ");
                     tree.build(new Node(Integer.parseInt(input.next().trim())));
@@ -17,12 +17,12 @@ public class Main {
                     index++;
                 }
                 index = 0;
-                while (operationCount > 0) {
-                    System.out.println("Operations: " + operationCount);
+                while (operation <= operationCount) {
+                    System.out.println("Operations: " + operation + "---------------------------------------------");
                     index %= tree.getRoot().getSize();
                     index += tree.operate(index);
-                    operationCount--;
                     tree.print(tree.getRoot());
+                    operation++;
                 }
             } catch (FileNotFoundException e) {
                 System.out.println("File not found!");
