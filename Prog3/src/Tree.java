@@ -28,12 +28,14 @@ public class Tree {
         int tmp = getBalanceFactor(node);
         if (tmp < -1) {
             if (getBalanceFactor(node.getLeftNode()) > 0) { //Double Right (R-L)
+                System.out.println("===================================================================================");
                 node = rotateRight(node.getRightNode(), node);
                 rotateLeft(node, parent);
             } else //One rotation L
                 rotateLeft(node, parent);
         } else if (tmp > 1) {
             if (getBalanceFactor(node.getRightNode()) < 0) { //Double Left (L-R)
+                System.out.println("===================================================================================");
                 node = rotateLeft(node.getLeftNode(), node);
                 rotateRight(node, parent);
             } else //One rotation R
@@ -94,7 +96,7 @@ public class Tree {
                 if (tmp != null) //Deleted is in the same subtree
                     deleteRec(currentNode, parent, relativeIndex + 1);
                 else {//Deleted is in another subtree
-                    if (index + 2 > root.getSize())
+                    if (index + 1 >= root.getSize())
                         countToSkip--;
                     deleteRec(root, null, (index + 1) % root.getSize());
                 }
@@ -105,6 +107,7 @@ public class Tree {
                 newNode.updateSizeAndHeight();
                 currentNode.setRightNode(newNode);
                 countToSkip = currentNode.getValue();
+                rotationsCheck(newNode,currentNode);
             }
         }
         currentNode.updateSizeAndHeight();
@@ -147,6 +150,7 @@ public class Tree {
             getSubstitutionRec(node.getRightNode(), node);
         else {
             substitution = node.getLeftNode();
+            node.setRightNode(node.getLeftNode().getRightNode());
             node.setLeftNode(null);
         }
         return substitution;
@@ -154,7 +158,7 @@ public class Tree {
 
     public void getSubstitutionRec(Node node, Node parent) {
         if (node.getLeftNode() != null)
-            getSubstitutionRec(node.getLeftNode(), parent);
+            getSubstitutionRec(node.getLeftNode(), node);
         else {
             if (parent.getLeftNode() == node)
                 parent.setLeftNode(node.getRightNode());
@@ -162,6 +166,7 @@ public class Tree {
                 parent.setRightNode(node.getRightNode());
             substitution = node;
         }
+        node.updateSizeAndHeight();
         rotationsCheck(node, parent);
     }
 

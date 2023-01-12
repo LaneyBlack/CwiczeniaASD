@@ -18,7 +18,7 @@ public class Main {
                 }
                 index = 0;
                 while (operation <= operationCount) {
-                    System.out.println("Operations: " + operation + "---------------------------------------------");
+                    System.out.println("Operations: " + operation + " ---------------------------------------------");
                     index += tree.operate(index);
                     index %= tree.getRoot().getSize();
                     tree.print(tree.getRoot());
