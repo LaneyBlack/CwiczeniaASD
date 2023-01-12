@@ -19,11 +19,12 @@ public class Main {
                 index = 0;
                 while (operation <= operationCount) {
                     System.out.println("Operations: " + operation + "---------------------------------------------");
-                    index %= tree.getRoot().getSize();
                     index += tree.operate(index);
+                    index %= tree.getRoot().getSize();
                     tree.print(tree.getRoot());
                     operation++;
                 }
+                System.out.println(tree.printAnswer(index));
             } catch (FileNotFoundException e) {
                 System.out.println("File not found!");
                 throw new RuntimeException(e);

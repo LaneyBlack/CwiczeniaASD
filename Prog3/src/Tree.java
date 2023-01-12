@@ -1,7 +1,6 @@
 public class Tree {
     private Node root;
     private int countToSkip;
-
     private Node substitution;
 
     public Tree() {
@@ -91,10 +90,14 @@ public class Tree {
             Node tmp = currentNode.getRightNode();
             if (currentNode.getValue() % 2 == 0) { //DELETE
                 System.out.println("Delete for: " + currentNode);
+                countToSkip = 0;
                 if (tmp != null) //Deleted is in the same subtree
                     deleteRec(currentNode, parent, relativeIndex + 1);
-                else //Deleted is in another subtree
-                    deleteRec(root, null, (index + 1)%root.getSize());
+                else {//Deleted is in another subtree
+                    if (index + 2 > root.getSize())
+                        countToSkip--;
+                    deleteRec(root, null, (index + 1) % root.getSize());
+                }
             } else { //ADD
                 System.out.println("Add  for: " + currentNode);
                 Node newNode = new Node(currentNode.getValue() - 1);
@@ -120,7 +123,7 @@ public class Tree {
         else if (lTSize < index)
             deleteRec(currentNode.getRightNode(), currentNode, index - lTSize - 1);
         else {
-            countToSkip=currentNode.getValue();
+            countToSkip += currentNode.getValue();
             getSubstitution(currentNode);
             if (substitution == null) {
                 if (parent == null)
@@ -153,10 +156,38 @@ public class Tree {
         if (node.getLeftNode() != null)
             getSubstitutionRec(node.getLeftNode(), parent);
         else {
-            parent.setLeftNode(node.getRightNode());
+            if (parent.getLeftNode() == node)
+                parent.setLeftNode(node.getRightNode());
+            else
+                parent.setRightNode(node.getRightNode());
             substitution = node;
         }
         rotationsCheck(node, parent);
+    }
+
+    public String printAnswer(int index) {
+        String answer = "";
+        for (int i = 0; i < root.getSize(); i++) {
+            answer += getNode(index).getValue() + " ";
+            index++;
+            index %= root.getSize();
+        }
+        return answer;
+    }
+
+    public Node getNode(int index) {
+        Node current = root;
+        int leftTreeSize = current.getLeftNode() == null ? 0 : current.getLeftNode().getSize();
+        while (leftTreeSize != index) {
+            if (leftTreeSize > index)
+                current = current.getLeftNode();
+            else {
+                current = current.getRightNode();
+                index = index - leftTreeSize - 1;
+            }
+            leftTreeSize = current.getLeftNode() == null ? 0 : current.getLeftNode().getSize();
+        }
+        return current;
     }
 
     public Node getRoot() {
