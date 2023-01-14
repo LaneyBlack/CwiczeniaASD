@@ -19,8 +19,10 @@ public class Main {
                 index = 0;
                 while (operation <= operationCount) {
                     System.out.println("Operations: " + operation + " ---------------------------------------------");
-                    index += tree.operate(index);
-                    index %= tree.getRoot().getSize();
+                    if(tree.getRoot()!=null) {
+                        index %= tree.getRoot().getSize();
+                        index += tree.operate(index);
+                    }
                     tree.print(tree.getRoot());
                     operation++;
                 }

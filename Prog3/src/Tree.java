@@ -82,6 +82,13 @@ public class Tree {
         return rightNode;
     }
 
+    public int operate(int index) {
+        countToSkip = 0;
+        if (index < root.getSize() && index >= 0)
+            operateRec(root, null, index, index);
+        return countToSkip;
+    }
+
     public void operateRec(Node currentNode, Node parent, int relativeIndex, int index) {
         int lTSize = currentNode.getLeftNode() == null ? 0 : currentNode.getLeftNode().getSize();
         if (lTSize > relativeIndex)
@@ -92,7 +99,6 @@ public class Tree {
             Node tmp = currentNode.getRightNode();
             if (currentNode.getValue() % 2 == 0) { //DELETE
                 System.out.println("Delete for: " + currentNode);
-                countToSkip = 0;
                 if (tmp != null) //Deleted is in the same subtree
                     deleteRec(currentNode, parent, relativeIndex + 1);
                 else {//Deleted is in another subtree
@@ -107,16 +113,11 @@ public class Tree {
                 newNode.updateSizeAndHeight();
                 currentNode.setRightNode(newNode);
                 countToSkip = currentNode.getValue();
-                rotationsCheck(newNode,currentNode);
+                rotationsCheck(newNode, currentNode);
             }
         }
         currentNode.updateSizeAndHeight();
         rotationsCheck(currentNode, parent);
-    }
-
-    public int operate(int index) {
-        operateRec(root, null, index, index);
-        return countToSkip;
     }
 
     public void deleteRec(Node currentNode, Node parent, int index) {
@@ -172,11 +173,12 @@ public class Tree {
 
     public String printAnswer(int index) {
         String answer = "";
-        for (int i = 0; i < root.getSize(); i++) {
-            answer += getNode(index).getValue() + " ";
-            index++;
-            index %= root.getSize();
-        }
+        if (root != null)
+            for (int i = 0; i < root.getSize(); i++) {
+                index %= root.getSize();
+                answer += getNode(index).getValue() + " ";
+                index++;
+            }
         return answer;
     }
 
