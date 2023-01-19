@@ -27,16 +27,14 @@ public class Tree {
     public void rotationsCheck(Node node, Node parent) {
         int tmp = getBalanceFactor(node);
         if (tmp < -1) {
-            if (getBalanceFactor(node.getLeftNode()) > 0) { //Double Right (R-L)
-                System.out.println("===================================================================================");
-                node = rotateRight(node.getRightNode(), node);
+            if (getBalanceFactor(node.getRightNode()) > 0) { //Double Right (R-L)
+                rotateRight(node.getRightNode(), node);
                 rotateLeft(node, parent);
             } else //One rotation L
                 rotateLeft(node, parent);
         } else if (tmp > 1) {
-            if (getBalanceFactor(node.getRightNode()) < 0) { //Double Left (L-R)
-                System.out.println("===================================================================================");
-                node = rotateLeft(node.getLeftNode(), node);
+            if (getBalanceFactor(node.getLeftNode()) < 0) { //Double Left (L-R)
+                rotateLeft(node.getLeftNode(), node);
                 rotateRight(node, parent);
             } else //One rotation R
                 rotateRight(node, parent);
@@ -59,7 +57,6 @@ public class Tree {
             parent.setLeftNode(leftNode);
         else
             parent.setRightNode(leftNode);
-
         return leftNode;
     }
 
@@ -100,7 +97,7 @@ public class Tree {
             if (currentNode.getValue() % 2 == 0) { //DELETE
                 System.out.println("Delete for: " + currentNode);
                 if (tmp != null) //Deleted is in the same subtree
-                    deleteRec(currentNode, parent, relativeIndex + 1);
+                    deleteRec(root, null, index + 1);
                 else {//Deleted is in another subtree
                     if (index + 1 >= root.getSize())
                         countToSkip--;
@@ -108,16 +105,9 @@ public class Tree {
                 }
             } else { //ADD
                 System.out.println("Add  for: " + currentNode);
-                Node newNode = new Node(currentNode.getValue() - 1);
-                newNode.setRightNode(tmp);
-                newNode.updateSizeAndHeight();
-                currentNode.setRightNode(newNode);
-                countToSkip = currentNode.getValue();
-                rotationsCheck(newNode, currentNode);
+                addRec(root,null,index);
             }
         }
-        currentNode.updateSizeAndHeight();
-        rotationsCheck(currentNode, parent);
     }
 
     public void deleteRec(Node currentNode, Node parent, int index) {
@@ -136,13 +126,35 @@ public class Tree {
                     parent.setLeftNode(null);
                 else
                     parent.setRightNode(null);
+
             } else {
                 currentNode.setValue(substitution.getValue());
                 substitution = null;
             }
         }
         currentNode.updateSizeAndHeight();
+        rotationsCheck(currentNode, parent);
     }
+
+    public void addRec(Node currentNode, Node parent, int index) {
+        int lTSize = currentNode.getLeftNode() == null ? 0 : currentNode.getLeftNode().getSize();
+        if (lTSize > index)
+            addRec(currentNode.getLeftNode(), currentNode, index);
+        else if (lTSize < index)
+            addRec(currentNode.getRightNode(), currentNode, index - lTSize - 1);
+        else {
+            Node tmp = currentNode.getRightNode();
+            Node newNode = new Node(currentNode.getValue() - 1);
+            newNode.setRightNode(tmp);
+            newNode.updateSizeAndHeight();
+            currentNode.setRightNode(newNode);
+            countToSkip = currentNode.getValue();
+            rotationsCheck(newNode, currentNode);
+        }
+        currentNode.updateSizeAndHeight();
+        rotationsCheck(currentNode, parent);
+    }
+
 
     public Node getSubstitution(Node node) {
         if (node == null || !node.hasChildren())
@@ -167,8 +179,10 @@ public class Tree {
                 parent.setRightNode(node.getRightNode());
             substitution = node;
         }
-        node.updateSizeAndHeight();
-        rotationsCheck(node, parent);
+        if (node != substitution) {
+            node.updateSizeAndHeight();
+            rotationsCheck(node, parent);
+        }
     }
 
     public String printAnswer(int index) {

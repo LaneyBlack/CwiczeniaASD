@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -12,15 +13,16 @@ public class Main {
                 int index = 0, operation = 1;
                 while (input.hasNext()) {
                     System.out.println(index + ": ");
-                    tree.build(new Node(Integer.parseInt(input.next().trim())));
+                    tree.build(new Node(Integer.parseInt(input.next().replace(",", "").trim())));
                     tree.print(tree.getRoot());
                     index++;
                 }
                 index = 0;
                 while (operation <= operationCount) {
                     System.out.println("Operations: " + operation + " ---------------------------------------------");
-                    if(tree.getRoot()!=null) {
+                    if (tree.getRoot() != null) {
                         index %= tree.getRoot().getSize();
+                        System.out.println(tree.printAnswer(index));
                         index += tree.operate(index);
                     }
                     tree.print(tree.getRoot());
