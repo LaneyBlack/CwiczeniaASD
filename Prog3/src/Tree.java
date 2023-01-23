@@ -42,7 +42,7 @@ public class Tree {
     }
 
     public Node rotateRight(Node node, Node parent) {
-        System.out.println("Rotation right");
+//        System.out.println("Rotation right");
         Node leftNode = node.getLeftNode();
         Node rightLeftNode = leftNode.getRightNode();
         leftNode.setRightNode(node);
@@ -61,7 +61,7 @@ public class Tree {
     }
 
     public Node rotateLeft(Node node, Node parent) {
-        System.out.println("Rotation left");
+//        System.out.println("Rotation left");
         Node rightNode = node.getRightNode();
         Node leftRightNode = rightNode.getLeftNode();
         rightNode.setLeftNode(node);
@@ -95,7 +95,7 @@ public class Tree {
         else {
             Node tmp = currentNode.getRightNode();
             if (currentNode.getValue() % 2 == 0) { //DELETE
-                System.out.println("Delete for: " + currentNode);
+//                System.out.println("Delete for: " + currentNode);
                 if (tmp != null) //Deleted is in the same subtree
                     deleteRec(root, null, index + 1);
                 else {//Deleted is in another subtree
@@ -104,7 +104,7 @@ public class Tree {
                     deleteRec(root, null, (index + 1) % root.getSize());
                 }
             } else { //ADD
-                System.out.println("Add  for: " + currentNode);
+//                System.out.println("Add  for: " + currentNode);
                 addRec(root,null,index);
             }
         }

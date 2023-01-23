@@ -2,7 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class Main {
+public class Main2 {
     public static void main(String[] args) throws FileNotFoundException {
         if (args.length==1) {
             LetterTree tree = new LetterTree();
