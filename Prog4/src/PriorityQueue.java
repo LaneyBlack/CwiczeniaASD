@@ -26,13 +26,20 @@ public class PriorityQueue {
         }
     }
 
-    public void generateHuffmanCode(HuffmanNode node, String code) {
+    public void generateHuffmanCode(HuffmanNode node) {
+        if (node.hasChildren())
+            generateHuffmanCodeRec(node, "");
+        else
+            System.out.println(node.getCharacter() + " 0");
+    }
+
+    public void generateHuffmanCodeRec(HuffmanNode node, String code) {
+        if (node.getLeft() != null)
+            generateHuffmanCodeRec(node.getLeft(), code.concat("0"));
+        if (node.getRight() != null)
+            generateHuffmanCodeRec(node.getRight(), code.concat("1"));
         if (!node.hasChildren())
             System.out.println(node.getCharacter() + " " + code);
-        if (node.getLeft() != null)
-            generateHuffmanCode(node.getLeft(), code.concat("0"));
-        if (node.getRight() != null)
-            generateHuffmanCode(node.getRight(), code.concat("1"));
     }
 
     public HuffmanNode pull() {
